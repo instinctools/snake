@@ -194,7 +194,7 @@ const game = () => {
     score += 1;
   }
 
-  canvas.onkeydown = function (evt) {
+  canvas.onkeydown = (evt) => {
     evt = evt || window.event;
     changeDirection(evt.keyCode);
   };
