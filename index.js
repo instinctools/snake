@@ -1,25 +1,24 @@
-let canvas = document.getElementById("canvas"),
-  ctx = canvas.getContext("2d"),
-  scoreIs = document.getElementById("score"),
-  direction = "",
-  directionQueue = "",
-  fps = 200, // the larger the number, the slower the snake (and vice versa)
-  snake = [],
-  snakeLength = 5,
-  cellSize = 50,
-  snakeColor = "#7f9ccf",
-  foodColor = "#ea2325",
-  textYmargin = 3,
-  foodX = [],
-  foodY = [],
-  food = {
-    x: 0,
-    y: 0,
-  },
-  score = 0,
-  foodText = ["React", "TS", "Redux", "Next"],
-  hit = new Audio("hit.wav");
-pick = new Audio("pick.wav");
+const canvas = document.querySelector(".canvas");
+const ctx = canvas.getContext("2d");
+const scoreIs = document.querySelector(".score");
+let direction = "";
+let directionQueue = "";
+const fps = 200; // the larger the number, the slower the snake (and vice versa)
+let snake = [];
+const snakeLength = 5;
+const cellSize = 50;
+const snakeColor = "#7f9ccf";
+const textYmargin = 3;
+const foodX = [];
+const foodY = [];
+const food = {
+  x: 0,
+  y: 0,
+};
+let score = 0;
+const foodText = ["React", "TS", "Redux", "Next"];
+const hit = new Audio("hit.wav");
+const pick = new Audio("pick.wav");
 // pushes possible x and y positions to seperate arrays
 for (i = 0; i <= canvas.width - cellSize; i += cellSize) {
   foodX.push(i);
@@ -49,26 +48,13 @@ const createFood = () => {
 
 // drawing food on the canvas
 const drawFood = () => {
-  // uncomment if we will need a rectangle
-  // drawSquare(food.x, food.y, foodColor);
-  ctx.fillStyle = foodColor;
-  ctx.beginPath();
-  ctx.arc(
-    food.x + cellSize / 2,
-    food.y + cellSize / 2,
-    cellSize / 2,
-    null,
-    2 * Math.PI
-  );
-  ctx.fill();
-  ctx.font = "14px Courier New";
-  ctx.fillStyle = "white";
-  ctx.textAlign = "center";
-  ctx.fillText(
-    foodText[score] || "",
-    food.x + cellSize / 2,
-    food.y + cellSize / 2 + textYmargin
-  );
+  const img = new Image();
+
+  img.onload = () => {
+    ctx.drawImage(img, food.x, food.y, cellSize, cellSize); // Or at whatever offset you like
+  };
+
+  img.src = `./images/${score}.svg`;
 };
 
 // setting the colors for the canvas. color1 - the background, color2 - the line color
@@ -106,15 +92,15 @@ const drawSnake = () => {
   }
 };
 
-// keyboard interactions | direction != '...' doesn't let the snake go backwards
+// keyboard interactions | direction !== '...' doesn't let the snake go backwards
 const changeDirection = (keycode) => {
-  if (keycode == 37 && direction != "right") {
+  if (keycode == 37 && direction !== "right") {
     directionQueue = "left";
-  } else if (keycode == 38 && direction != "down") {
+  } else if (keycode == 38 && direction !== "down") {
     directionQueue = "up";
-  } else if (keycode == 39 && direction != "left") {
+  } else if (keycode == 39 && direction !== "left") {
     directionQueue = "right";
-  } else if (keycode == 40 && direction != "top") {
+  } else if (keycode == 40 && direction !== "top") {
     directionQueue = "down";
   }
 };
@@ -194,7 +180,7 @@ const game = () => {
     score += 1;
   }
 
-  canvas.onkeydown = function (evt) {
+  canvas.onkeydown = (evt) => {
     evt = evt || window.event;
     changeDirection(evt.keyCode);
   };
@@ -213,7 +199,7 @@ const newGame = () => {
   createSnake();
   createFood();
 
-  if (typeof loop != "undefined") {
+  if (typeof loop !== "undefined") {
     clearInterval(loop);
   } else {
     loop = setInterval(game, fps);
