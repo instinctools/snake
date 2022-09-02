@@ -8,7 +8,6 @@ let snake = [];
 const snakeLength = 5;
 const cellSize = 50;
 const snakeColor = "#7f9ccf";
-const foodColor = "#ea2325";
 const textYmargin = 3;
 const foodX = [];
 const foodY = [];
@@ -50,7 +49,7 @@ const createFood = () => {
 // drawing food on the canvas
 const drawFood = () => {
   const img = new Image();
-  
+
   img.onload = () => {
     ctx.drawImage(img, food.x, food.y, cellSize, cellSize); // Or at whatever offset you like
   };
