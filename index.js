@@ -5,9 +5,10 @@ let direction = "";
 let directionQueue = "";
 const fps = 200; // the larger the number, the slower the snake (and vice versa)
 let snake = [];
-const snakeLength = 5;
+const snakeLength = 3;
 const cellSize = 50;
 const snakeColor = "#7f9ccf";
+const snakeHeadImage = "./images/10.svg";
 const textYmargin = 3;
 const foodX = [];
 const foodY = [];
@@ -16,11 +17,10 @@ const food = {
   y: 0,
 };
 let score = 0;
-const foodText = ["React", "TS", "Redux", "Next"];
 const hit = new Audio("hit.wav");
 const pick = new Audio("pick.wav");
 // pushes possible x and y positions to seperate arrays
-for (i = 0; i <= canvas.width - cellSize; i += cellSize) {
+for (let i = 0; i <= canvas.width - cellSize; i += cellSize) {
   foodX.push(i);
   foodY.push(i);
 }
@@ -28,18 +28,13 @@ for (i = 0; i <= canvas.width - cellSize; i += cellSize) {
 canvas.setAttribute("tabindex", 1);
 canvas.style.outline = "none";
 canvas.focus();
-// draws a square.. obviously
-const drawSquare = (x, y, color) => {
-  ctx.fillStyle = color;
-  ctx.fillRect(x, y, cellSize, cellSize);
-};
 
 // giving the food object its coordinates
 const createFood = () => {
   food.x = foodX[Math.floor(Math.random() * foodX.length)]; // random x position from array
   food.y = foodY[Math.floor(Math.random() * foodY.length)]; // random y position from array
   // looping through the snake and checking if there is a collision
-  for (i = 0; i < snake.length; i++) {
+  for (let i = 0; i < snake.length; i++) {
     if (checkCollision(food.x, food.y, snake[i].x, snake[i].y)) {
       createFood();
     }
@@ -64,11 +59,11 @@ const setBackground = (color1, color2) => {
 
   ctx.fillRect(0, 0, canvas.height, canvas.width);
 
-  for (var x = 0.5; x < canvas.width; x += cellSize) {
+  for (let x = 0.5; x < canvas.width; x += cellSize) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, canvas.height);
   }
-  for (var y = 0.5; y < canvas.height; y += cellSize) {
+  for (let y = 0.5; y < canvas.height; y += cellSize) {
     ctx.moveTo(0, y);
     ctx.lineTo(canvas.width, y);
   }
@@ -79,7 +74,7 @@ const setBackground = (color1, color2) => {
 // creating the snake and pushing coordinates to the array
 const createSnake = () => {
   snake = [];
-  for (var i = snakeLength; i > 0; i--) {
+  for (let i = snakeLength; i > 0; i--) {
     k = i * cellSize;
     snake.push({ x: k, y: 0 });
   }
@@ -87,8 +82,32 @@ const createSnake = () => {
 
 // loops through the snake array and draws each element
 const drawSnake = () => {
+  const drawSquare = ({ x, y, snakeFill, isLastCell }) => {
+    if (isLastCell) {
+      const img = new Image();
+
+      img.onload = () => {
+        ctx.drawImage(img, x, y, cellSize, cellSize);
+      };
+
+      img.src = snakeHeadImage;
+    } else {
+      ctx.fillStyle = snakeFill;
+      ctx.fillRect(x, y, cellSize, cellSize);
+    }
+  };
+
   for (i = 0; i < snake.length; i++) {
-    drawSquare(snake[i].x, snake[i].y, snakeColor);
+    if (i === 0) {
+      drawSquare({
+        x: snake[i].x,
+        y: snake[i].y,
+        snakeFill: "",
+        isLastCell: true,
+      });
+    } else {
+      drawSquare({ x: snake[i].x, y: snake[i].y, snakeFill: snakeColor });
+    }
   }
 };
 
@@ -107,9 +126,9 @@ const changeDirection = (keycode) => {
 
 // changing the snake's movement
 const moveSnake = () => {
-  var x = snake[0].x; // getting the head coordinates...hhehehe... getting head..
+  let x = snake[0].x; // getting the head coordinates...hhehehe... getting head..
   // anyway... read on...
-  var y = snake[0].y;
+  let y = snake[0].y;
 
   direction = directionQueue;
 
@@ -124,7 +143,7 @@ const moveSnake = () => {
   }
 
   // removes the tail and makes it the new head...very delicate, don't touch this
-  var tail = snake.pop();
+  const tail = snake.pop();
   tail.x = x;
   tail.y = y;
   snake.unshift(tail);
@@ -141,7 +160,7 @@ const checkCollision = (x1, y1, x2, y2) => {
 
 // main game loop
 const game = () => {
-  var head = snake[0];
+  const head = snake[0];
   // checking for wall collisions
   if (
     head.x < 0 ||
@@ -192,7 +211,9 @@ const game = () => {
   drawFood();
   moveSnake();
 };
+
 const newGame = () => {
+  let loop;
   direction = "right"; // initial direction
   directionQueue = "right";
   ctx.beginPath();
