@@ -1,38 +1,39 @@
+const MAX_COUNT = 3;
+const FPS = 200;
+const SNAKE_LENGTH = 3;
+const CELL_SIZE = 50;
+const SNAKE_COLOR = "#7f9ccf";
+const SNAKE_HEAD_IMAGE = "./images/10.svg";
+
+const winnerText = document.querySelector('h2')
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
 const scoreIs = document.querySelector(".score");
-let direction = "";
-let directionQueue = "";
-const fps = 200; // the larger the number, the slower the snake (and vice versa)
-let snake = [];
-const snakeLength = 3;
-const cellSize = 50;
-const snakeColor = "#7f9ccf";
-const snakeHeadImage = "./images/10.svg";
-const textYmargin = 3;
 const foodX = [];
 const foodY = [];
 const food = {
   x: 0,
   y: 0,
 };
+
+let direction = "";
+let directionQueue = "";
+let loop;
+let snake = [];
 let score = 0;
-const hit = new Audio("hit.wav");
-const pick = new Audio("pick.wav");
-// pushes possible x and y positions to seperate arrays
-for (let i = 0; i <= canvas.width - cellSize; i += cellSize) {
+
+for (let i = 0; i <= canvas.width - CELL_SIZE; i += CELL_SIZE) {
   foodX.push(i);
   foodY.push(i);
 }
-// makes canvas interactive upon load
+
 canvas.setAttribute("tabindex", 1);
 canvas.style.outline = "none";
 canvas.focus();
 
-// giving the food object its coordinates
 const createFood = () => {
-  food.x = foodX[Math.floor(Math.random() * foodX.length)]; // random x position from array
-  food.y = foodY[Math.floor(Math.random() * foodY.length)]; // random y position from array
+  food.x = foodX[Math.floor(Math.random() * foodX.length)];
+  food.y = foodY[Math.floor(Math.random() * foodY.length)];
   // looping through the snake and checking if there is a collision
   for (let i = 0; i < snake.length; i++) {
     if (checkCollision(food.x, food.y, snake[i].x, snake[i].y)) {
@@ -41,29 +42,27 @@ const createFood = () => {
   }
 };
 
-// drawing food on the canvas
 const drawFood = () => {
   const img = new Image();
 
   img.onload = () => {
-    ctx.drawImage(img, food.x, food.y, cellSize, cellSize); // Or at whatever offset you like
+    ctx.drawImage(img, food.x, food.y, CELL_SIZE, CELL_SIZE);
   };
 
   img.src = `./images/${score}.svg`;
 };
 
-// setting the colors for the canvas. color1 - the background, color2 - the line color
 const setBackground = (color1, color2) => {
   ctx.fillStyle = color1;
   ctx.strokeStyle = color2;
 
   ctx.fillRect(0, 0, canvas.height, canvas.width);
 
-  for (let x = 0.5; x < canvas.width; x += cellSize) {
+  for (let x = 0.5; x < canvas.width; x += CELL_SIZE) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, canvas.height);
   }
-  for (let y = 0.5; y < canvas.height; y += cellSize) {
+  for (let y = 0.5; y < canvas.height; y += CELL_SIZE) {
     ctx.moveTo(0, y);
     ctx.lineTo(canvas.width, y);
   }
@@ -71,29 +70,27 @@ const setBackground = (color1, color2) => {
   ctx.stroke();
 };
 
-// creating the snake and pushing coordinates to the array
 const createSnake = () => {
   snake = [];
-  for (let i = snakeLength; i > 0; i--) {
-    k = i * cellSize;
+  for (let i = SNAKE_LENGTH; i > 0; i--) {
+    k = i * CELL_SIZE;
     snake.push({ x: k, y: 0 });
   }
 };
 
-// loops through the snake array and draws each element
 const drawSnake = () => {
   const drawSquare = ({ x, y, snakeFill, isLastCell }) => {
     if (isLastCell) {
       const img = new Image();
 
       img.onload = () => {
-        ctx.drawImage(img, x, y, cellSize, cellSize);
+        ctx.drawImage(img, x, y, CELL_SIZE, CELL_SIZE);
       };
 
-      img.src = snakeHeadImage;
+      img.src = SNAKE_HEAD_IMAGE;
     } else {
       ctx.fillStyle = snakeFill;
-      ctx.fillRect(x, y, cellSize, cellSize);
+      ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
     }
   };
 
@@ -106,12 +103,11 @@ const drawSnake = () => {
         isLastCell: true,
       });
     } else {
-      drawSquare({ x: snake[i].x, y: snake[i].y, snakeFill: snakeColor });
+      drawSquare({ x: snake[i].x, y: snake[i].y, snakeFill: SNAKE_COLOR });
     }
   }
 };
 
-// keyboard interactions | direction !== '...' doesn't let the snake go backwards
 const changeDirection = (keycode) => {
   if (keycode == 37 && direction !== "right") {
     directionQueue = "left";
@@ -124,32 +120,28 @@ const changeDirection = (keycode) => {
   }
 };
 
-// changing the snake's movement
 const moveSnake = () => {
-  let x = snake[0].x; // getting the head coordinates...hhehehe... getting head..
-  // anyway... read on...
+  let x = snake[0].x;
   let y = snake[0].y;
 
   direction = directionQueue;
 
   if (direction == "right") {
-    x += cellSize;
+    x += CELL_SIZE;
   } else if (direction == "left") {
-    x -= cellSize;
+    x -= CELL_SIZE;
   } else if (direction == "up") {
-    y -= cellSize;
+    y -= CELL_SIZE;
   } else if (direction == "down") {
-    y += cellSize;
+    y += CELL_SIZE;
   }
 
-  // removes the tail and makes it the new head...very delicate, don't touch this
   const tail = snake.pop();
   tail.x = x;
   tail.y = y;
   snake.unshift(tail);
 };
 
-// checks if too coordinates match up
 const checkCollision = (x1, y1, x2, y2) => {
   if (x1 == x2 && y1 == y2) {
     return true;
@@ -158,17 +150,15 @@ const checkCollision = (x1, y1, x2, y2) => {
   }
 };
 
-// main game loop
 const game = () => {
   const head = snake[0];
   // checking for wall collisions
   if (
     head.x < 0 ||
-    head.x > canvas.width - cellSize ||
+    head.x > canvas.width - CELL_SIZE ||
     head.y < 0 ||
-    head.y > canvas.height - cellSize
+    head.y > canvas.height - CELL_SIZE
   ) {
-    hit.play();
     setBackground();
     createSnake();
     drawSnake();
@@ -180,7 +170,6 @@ const game = () => {
   // checking for colisions with snake's body
   for (i = 1; i < snake.length; i++) {
     if (head.x == snake[i].x && head.y == snake[i].y) {
-      hit.play(); // playing sounds
       setBackground();
       createSnake();
       drawSnake();
@@ -195,7 +184,6 @@ const game = () => {
     snake[snake.length] = { x: head.x, y: head.y };
     createFood();
     drawFood();
-    pick.play();
     score += 1;
   }
 
@@ -208,13 +196,22 @@ const game = () => {
   setBackground("#fff", "#eee");
   scoreIs.innerHTML = score;
   drawSnake();
-  drawFood();
   moveSnake();
+
+  if (score < MAX_COUNT) {
+    drawFood();
+  }
+
+  if (score >= MAX_COUNT) {
+    setTimeout(() => {
+      clearInterval(loop);
+    }, 200);
+    winnerText.style.display = 'block';
+  }
 };
 
 const newGame = () => {
-  let loop;
-  direction = "right"; // initial direction
+  direction = "right";
   directionQueue = "right";
   ctx.beginPath();
   createSnake();
@@ -223,7 +220,7 @@ const newGame = () => {
   if (typeof loop !== "undefined") {
     clearInterval(loop);
   } else {
-    loop = setInterval(game, fps);
+    loop = setInterval(game, FPS);
   }
 };
 
