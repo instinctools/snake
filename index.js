@@ -203,9 +203,7 @@ const game = () => {
   }
 
   if (score >= MAX_COUNT) {
-    setTimeout(() => {
-      clearInterval(loop);
-    }, 200);
+    clearInterval(loop);
     winnerText.style.display = 'block';
   }
 };
