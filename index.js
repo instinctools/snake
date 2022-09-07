@@ -1,9 +1,9 @@
-const MAX_COUNT = 3;
+const MAX_COUNT = 12;
 const FPS = 200;
 const SNAKE_LENGTH = 3;
 const CELL_SIZE = 50;
 const SNAKE_COLOR = "#7f9ccf";
-const SNAKE_HEAD_IMAGE = "./images/10.svg";
+const SNAKE_HEAD_IMAGE = "./images/head.svg";
 
 const winnerText = document.querySelector('h2')
 const canvas = document.querySelector(".canvas");
@@ -87,6 +87,8 @@ const drawSnake = () => {
         ctx.drawImage(img, x, y, CELL_SIZE, CELL_SIZE);
       };
 
+      ctx.fillStyle = snakeFill;
+      ctx.fillRect(x, y, CELL_SIZE, CELL_SIZE);
       img.src = SNAKE_HEAD_IMAGE;
     } else {
       ctx.fillStyle = snakeFill;
