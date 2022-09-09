@@ -11,6 +11,14 @@ body {
 
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  width: 500px;
+  margin: auto;
+}
+
 .score {
   font-family: verdana;
   font-size: 2em;
@@ -19,24 +27,14 @@ body {
 }
 canvas {
   display: block;
-  position: absolute;
-  margin: auto;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
+  margin: 20px auto;
 }
 
 h2 {
   display: none;
 
-  position: absolute;
-  top: 50%;
-  left: calc(50% - 280px);
-
-  font-size: 50px;
-
-  color: #9FD500;
+  font-size: 70px;
+  color: #809CD0;
 }
 
 .level {
