@@ -1,15 +1,34 @@
+@font-face {
+	font-family: montserratBold;
+	src: url("./fonts/Montserrat-Bold.ttf");
+}
+
 * {
   margin: 0;
   padding: 0;
 }
+
 html {
   height: 100%;
 }
+
 body {
-  background: -webkit-linear-gradient(top, #809CD0, #FF0000);
-  text-align: center;
+  width: 100%;
+  height: 100%;
+
+  background: url(./images/background.svg) no-repeat;
+  background-size: cover;
 
   font-family: Arial, Helvetica, sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-board {
+  height: 700px;
 }
 
 .top {
@@ -23,11 +42,14 @@ body {
   font-family: verdana;
   font-size: 2em;
   position: relative;
-  color: #ffc000
+  color: #ffc000;
+  font-family: montserratBold;
 }
 canvas {
   display: block;
   margin: 20px auto;
+
+  border: 2px solid #D0D3D6;
 }
 
 h2 {
@@ -35,9 +57,14 @@ h2 {
 
   font-size: 70px;
   color: #809CD0;
+
+  text-align: center;
+
+  font-family: montserratBold;
 }
 
 .level {
   font-size: 30px;
   color: #ff0000;
+  font-family: montserratBold;
 }
