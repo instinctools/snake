@@ -211,7 +211,7 @@ const game = () => {
 
   ctx.beginPath();
   setBackground("#fff", "#eee");
-  scoreIs.innerHTML = score;
+  scoreIs.innerHTML = `Score: ${score}`;
   drawSnake();
   moveSnake();
 
