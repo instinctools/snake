@@ -31,6 +31,27 @@ canvas.setAttribute("tabindex", 1);
 canvas.style.outline = "none";
 canvas.focus();
 
+const createImage = (path) => {
+  const image = new Image();
+  image.src = path;
+  return image;
+}
+
+const images = [
+  createImage('./images/0.svg'),
+  createImage('./images/1.svg'),
+  createImage('./images/2.svg'),
+  createImage('./images/3.svg'),
+  createImage('./images/4.svg'),
+  createImage('./images/5.svg'),
+  createImage('./images/6.svg'),
+  createImage('./images/7.svg'),
+  createImage('./images/8.svg'),
+  createImage('./images/9.svg'),
+  createImage('./images/10.svg'),
+  createImage('./images/11.svg'),
+]
+
 const createFood = () => {
   food.x = foodX[Math.floor(Math.random() * foodX.length)];
   food.y = foodY[Math.floor(Math.random() * foodY.length)];
@@ -43,13 +64,7 @@ const createFood = () => {
 };
 
 const drawFood = () => {
-  const img = new Image();
-
-  img.onload = () => {
-    ctx.drawImage(img, food.x, food.y, CELL_SIZE, CELL_SIZE);
-  };
-
-  img.src = `./images/${score}.svg`;
+  ctx.drawImage(images[score], food.x, food.y, CELL_SIZE, CELL_SIZE);
 };
 
 const setBackground = (color1, color2) => {
